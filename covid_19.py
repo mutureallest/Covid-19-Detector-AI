@@ -1,6 +1,6 @@
 
 
-"""## Explore the Example Data"""
+"""## Exploring the Covid-19 Data"""
 
 
 import os
@@ -27,7 +27,7 @@ train_normal_fnames = os.listdir(train_normal_dir)
 train_normal_fnames.sort()
 print(train_normal_fnames[:10])
 
-"""Let's find out the total number of cat and dog images in the `train` and `validation` directories:"""
+"""Let's find out the total number of Covid and Normal images in the `train` and `validation` directories:"""
 
 print('total training covid images:', len(os.listdir(train_covid_dir)))
 print('total training normal images:', len(os.listdir(train_normal_dir)))
@@ -101,22 +101,8 @@ model.add(Dense(64, activation="relu"))
 model.add(Dropout(0.25))
 model.add(Dense(1, activation="sigmoid", name="visualized_layer"))
 
-model.compile(loss=keras.losses.binary_crossentropy, optimizer="adam", metrics=["accuracy"])"""
+model.compile(loss=keras.losses.binary_crossentropy, optimizer="adam", metrics=["accuracy"])
 
-# On top of it we stick two fully-connected layers. Because we are facing a two-class classification problem, i.e. a *binary classification problem*, we will end our network with a [*sigmoid* activation](https://wikipedia.org/wiki/Sigmoid_function), so that the output of our network will be a single scalar between 0 and 1, encoding the probability that the current image is class 1 (as opposed to class 0).
-# Let's summarize the model architecture
-
-#model.summary()
-
-# The "output shape" column shows how the size of your feature map evolves in each successive layer. The convolution layers reduce the size of the feature maps by a bit due to padding, and each pooling layer halves the feature map.
-
-# Data Preprocessing
-
-Let's set up data generators that will read pictures in our source folders, convert them to `float32` tensors, and feed them (with their labels) to our network. We'll have one generator for the training images and one for the validation images. Our generators will yield batches of 20 images of size 150x150 and their labels (binary).
-
-As you may already know, data that goes into neural networks should usually be normalized in some way to make it more amenable to processing by the network. (It is uncommon to feed raw pixels into a convnet.) In our case, we will preprocess our images by normalizing the pixel values to be in the `[0, 1]` range (originally all values are in the `[0, 255]` range).
-
-In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit_generator`, `evaluate_generator`, and `predict_generator`."""
 
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -140,9 +126,7 @@ validation_generator = val_datagen.flow_from_directory(
         batch_size=32,
         class_mode='binary')
 
-"""### Training
-#Let's train on all 224 images available, for 15 epochs, and validate on all 60 validation images. (This may take a few minutes to run.)
-"""
+
 
 history = model.fit_generator(
       train_generator,
@@ -184,7 +168,7 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img
 successive_outputs = [layer.output for layer in model.layers[1:]]
 visualization_model = Model(input=model.inputs, output=successive_outputs)
 
-# Let's prepare a random input image of a cat or dog from the training set.
+# Let's prepare a random input image of a covid or normal from the training set.
 covid_img_files = [os.path.join(train_covid_dir, f) for f in train_covid_fnames]
 normal_img_files = [os.path.join(train_normal_dir, f) for f in train_normal_fnames]
 img_path = random.choice(covid_img_files + normal_img_files)
